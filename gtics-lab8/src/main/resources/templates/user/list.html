@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="base :: head('Lista de usuarios')"></head>
+<body>
+<nav th:replace="base :: navbar"></nav>
+<div class="container mt-4">
+    <h3>Lista de usuarios</h3>
+
+    <div th:replace="base :: mensajes"></div>
+
+    <table class="table table-sm table-bordered">
+        <thead class="thead-light">
+        <tr>
+            <th>#</th>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Correo</th>
+            <th>Rol</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="usuario, info : ${listausuarios}">
+            <td th:text="${info.index + 1}"></td>
+            <td th:text="${usuario.idUser}"></td>
+            <td th:text="${usuario.firstname}"></td>
+            <td th:text="${usuario.lastname}"></td>
+            <td th:text="${usuario.email}"></td>
+            <td th:text="${usuario.rol.roleName}"></td>
+            <td>
+                <span th:if="${usuario.active}" class="badge badge-success">Activo</span>
+                <span th:unless="${usuario.active}" class="badge badge-secondary">Inactivo</span>
+            </td>
+            <td class="text-nowrap">
+                <a class="btn btn-sm btn-primary" th:href="@{/user/editar(id=${usuario.idUser})}">Editar</a>
+                <form th:if="${usuario.idUser != session.usuario.idUser}" th:action="@{/user/estado}" method="post" class="d-inline">
+                    <input type="hidden" name="id" th:value="${usuario.idUser}">
+                    <button type="submit" th:class="${usuario.active} ? 'btn btn-sm btn-danger' : 'btn btn-sm btn-success'"
+                            th:text="${usuario.active} ? 'Desactivar' : 'Activar'">Estado</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="base :: head('Amigos')"></head>
+<body>
+<nav th:replace="base :: navbar"></nav>
+<div class="container mt-4">
+    <h3>Amigos</h3>
+
+    <div th:replace="base :: mensajes"></div>
+
+    <h5 class="mt-4">Solicitudes recibidas</h5>
+    <table class="table table-sm table-bordered">
+        <tr th:each="s : ${recibidas}">
+            <td th:text="|${s.emisor.firstname} ${s.emisor.lastname}|"></td>
+            <td th:text="${#temporals.format(s.fecha, 'dd/MM/yyyy HH:mm')}"></td>
+            <td class="text-nowrap">
+                <form th:action="@{/amigos/aceptar}" method="post" class="d-inline">
+                    <input type="hidden" name="id" th:value="${s.idSolicitud}">
+                    <button type="submit" class="btn btn-sm btn-success">Aceptar</button>
+                </form>
+                <form th:action="@{/amigos/rechazar}" method="post" class="d-inline">
+                    <input type="hidden" name="id" th:value="${s.idSolicitud}">
+                    <button type="submit" class="btn btn-sm btn-danger">Rechazar</button>
+                </form>
+            </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(recibidas)}">
+            <td colspan="3">No tienes solicitudes pendientes</td>
+        </tr>
+    </table>
+
+    <h5 class="mt-4">Solicitudes enviadas</h5>
+    <table class="table table-sm table-bordered">
+        <tr th:each="s : ${enviadas}">
+            <td th:text="|${s.receptor.firstname} ${s.receptor.lastname}|"></td>
+            <td th:text="${#temporals.format(s.fecha, 'dd/MM/yyyy HH:mm')}"></td>
+            <td>
+                <form th:action="@{/amigos/cancelar}" method="post" class="d-inline">
+                    <input type="hidden" name="id" th:value="${s.idSolicitud}">
+                    <button type="submit" class="btn btn-sm btn-secondary">Cancelar</button>
+                </form>
+            </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(enviadas)}">
+            <td colspan="3">No has enviado solicitudes</td>
+        </tr>
+    </table>
+
+    <h5 class="mt-4">Mis amigos</h5>
+    <table class="table table-sm table-bordered">
+        <tr th:each="s : ${amistades}"
+            th:with="amigo=${s.emisor.idUser == session.usuario.idUser ? s.receptor : s.emisor}">
+            <td th:text="|${amigo.firstname} ${amigo.lastname}|"></td>
+            <td th:text="${amigo.email}"></td>
+            <td>
+                <form th:action="@{/amigos/eliminar}" method="post" class="d-inline"
+                      onsubmit="return confirm('¿Eliminar esta amistad?');">
+                    <input type="hidden" name="id" th:value="${s.idSolicitud}">
+                    <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button>
+                </form>
+            </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(amistades)}">
+            <td colspan="3">Aún no tienes amigos</td>
+        </tr>
+    </table>
+
+    <h5 class="mt-4">Otros usuarios</h5>
+    <table class="table table-sm table-bordered">
+        <tr th:each="u : ${otrosUsuarios}">
+            <td th:text="|${u.firstname} ${u.lastname}|"></td>
+            <td th:text="${u.intro}"></td>
+            <td>
+                <form th:action="@{/amigos/enviar}" method="post" class="d-inline">
+                    <input type="hidden" name="id" th:value="${u.idUser}">
+                    <button type="submit" class="btn btn-sm btn-primary">Enviar solicitud</button>
+                </form>
+            </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(otrosUsuarios)}">
+            <td colspan="3">No hay más usuarios</td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

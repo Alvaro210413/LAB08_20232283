@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="base :: head(${accion == '/user/guardar' ? 'Mi perfil' : 'Editar usuario'})"></head>
+<body>
+<nav th:replace="base :: navbar"></nav>
+<div class="container mt-4">
+    <h2 th:text="${accion == '/user/guardar' ? 'Mi perfil' : 'Editar usuario'}">Perfil</h2>
+    <hr/>
+
+    <div th:replace="base :: mensajes"></div>
+
+    <p>
+        <strong>Correo:</strong> <span th:text="${usuario.email}"></span><br>
+        <strong>Rol:</strong> <span th:text="${usuario.rol != null ? usuario.rol.roleName : ''}"></span><br>
+        <strong>Posts escritos:</strong> <span th:text="${cantidadPosts}"></span>
+    </p>
+
+    <form method="post" th:action="@{${accion}}" th:object="${usuario}">
+        <input type="hidden" th:field="*{idUser}"/>
+        <div class="form-group">
+            <label for="firstname">Nombre</label>
+            <input type="text" class="form-control" th:field="*{firstname}" th:classappend="${#fields.hasErrors('firstname')} ? 'is-invalid'" maxlength="50">
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('firstname')}" th:errors="*{firstname}"></div>
+        </div>
+        <div class="form-group">
+            <label for="lastname">Apellido</label>
+            <input type="text" class="form-control" th:field="*{lastname}" th:classappend="${#fields.hasErrors('lastname')} ? 'is-invalid'" maxlength="50">
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('lastname')}" th:errors="*{lastname}"></div>
+        </div>
+        <div class="form-group">
+            <label for="intro">Texto de introducción</label>
+            <input type="text" class="form-control" th:field="*{intro}" th:classappend="${#fields.hasErrors('intro')} ? 'is-invalid'" maxlength="255">
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('intro')}" th:errors="*{intro}"></div>
+        </div>
+        <div class="form-group">
+            <label for="profile">Texto de perfil</label>
+            <textarea class="form-control" rows="4" th:field="*{profile}"></textarea>
+        </div>
+        <a th:href="${accion == '/user/guardar'} ? @{/post} : @{/user/list}" class="btn btn-danger">Cancelar</a>
+        <button type="submit" class="btn btn-primary">Actualizar</button>
+    </form>
+</div>
+</body>
+</html>

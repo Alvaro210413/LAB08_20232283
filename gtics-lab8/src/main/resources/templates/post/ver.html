@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="base :: head(${post.title})"></head>
+<body>
+<nav th:replace="base :: navbar"></nav>
+<div class="container mt-4">
+    <h2 th:text="${post.title}">Título</h2>
+    <p class="text-muted">
+        Por <span th:text="|${post.user.firstname} ${post.user.lastname}|">Autor</span>
+        <span th:unless="${post.published}" class="badge badge-secondary ml-2">Borrador</span>
+    </p>
+    <p class="lead" th:text="${post.summary}">Resumen</p>
+    <hr/>
+    <p style="white-space: pre-wrap" th:text="${post.content}">Contenido</p>
+    <hr/>
+    <a th:href="@{/post}" class="btn btn-secondary">Volver</a>
+    <a th:if="${puedeModificar}" th:href="@{/post/edit(id=${post.idPost})}" class="btn btn-primary">Editar</a>
+</div>
+</body>
+</html>

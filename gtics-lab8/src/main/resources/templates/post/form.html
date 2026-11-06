@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="base :: head(${post.idPost == 0 ? 'Nuevo post' : 'Editar post'})"></head>
+<body>
+<nav th:replace="base :: navbar"></nav>
+<div class="container mt-4">
+    <h2 th:text="${post.idPost == 0 ? 'Nuevo post' : 'Editar post'}">Nuevo/Editar</h2>
+    <hr/>
+    <form method="post" th:action="@{/post/guardar}" th:object="${post}">
+        <input type="hidden" th:field="*{idPost}"/>
+        <div class="form-group">
+            <label for="title">Título</label>
+            <input type="text" class="form-control" th:field="*{title}" th:classappend="${#fields.hasErrors('title')} ? 'is-invalid'" maxlength="75">
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
+        </div>
+        <div class="form-group">
+            <label for="summary">Resumen</label>
+            <input type="text" class="form-control" th:field="*{summary}" th:classappend="${#fields.hasErrors('summary')} ? 'is-invalid'" maxlength="255">
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('summary')}" th:errors="*{summary}"></div>
+        </div>
+        <div class="form-group">
+            <label for="content">Contenido</label>
+            <textarea class="form-control" rows="8" th:field="*{content}" th:classappend="${#fields.hasErrors('content')} ? 'is-invalid'"></textarea>
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></div>
+        </div>
+        <div class="form-group form-check">
+            <input type="checkbox" class="form-check-input" th:field="*{published}">
+            <label class="form-check-label" th:for="${#ids.prev('published')}">Publicado</label>
+        </div>
+        <a th:href="@{/post}" class="btn btn-danger">Cancelar</a>
+        <button type="submit" class="btn btn-primary" th:text="${post.idPost == 0 ? 'Registrar' : 'Actualizar'}">Guardar</button>
+    </form>
+</div>
+</body>
+</html>
